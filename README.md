@@ -89,7 +89,8 @@ The `swiftgen.yml` file at the root of the repository describes how constants ar
 
 ### Configuring the project to run on your machine
 
-Keychain access does not require a Keychain access group.
+Local builds use ad hoc signing and do not require a development team or a Keychain access group.
+For distribution, configure your own signing identity and development team.
 
 Credentials are stored in the user's default file-based Keychain (normally the login Keychain).
 GitHub App private keys are stored as generic password items with service
