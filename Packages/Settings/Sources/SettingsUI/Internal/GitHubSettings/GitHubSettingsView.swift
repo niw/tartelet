@@ -13,6 +13,7 @@ struct GitHubSettingsView<SettingsStoreType: SettingsStore & Observable>: View {
     @State private var repositoryName = ""
     @State private var appId = ""
     @State private var privateKeyName = ""
+    @State private var privateKeyDeletionFailed = false
 
     var body: some View {
         Form {
@@ -52,11 +53,18 @@ struct GitHubSettingsView<SettingsStoreType: SettingsStore & Observable>: View {
                 GitHubPrivateKeyPicker(
                     filename: $privateKeyName,
                     scope: settingsStore.githubRunnerScope,
-                    isEnabled: isSettingsEnabled
+                    isEnabled: isSettingsEnabled,
+                    hasPrivateKey: credentialsStore.privateKey != nil
                 ) { fileURL in
                     Task {
                         await storePrivateKey(at: fileURL)
                     }
+                } onDelete: {
+                    deletePrivateKey()
+                }
+                if privateKeyDeletionFailed {
+                    Text(L10n.Settings.Github.PrivateKey.deletionFailed)
+                        .foregroundStyle(.red)
                 }
             } footer: {
                 Button {
@@ -74,6 +82,8 @@ struct GitHubSettingsView<SettingsStoreType: SettingsStore & Observable>: View {
             appId = credentialsStore.appId ?? ""
             if credentialsStore.privateKey != nil {
                 privateKeyName = settingsStore.gitHubPrivateKeyName ?? ""
+            } else {
+                privateKeyName = ""
             }
         }
         .onChange(of: organizationName) { _, newValue in
@@ -110,6 +120,7 @@ private extension GitHubSettingsView {
     }
 
     private func storePrivateKey(at fileURL: URL) async {
+        privateKeyDeletionFailed = false
         do {
             let data = try Data(contentsOf: fileURL)
             credentialsStore.setPrivateKey(data)
@@ -121,6 +132,16 @@ private extension GitHubSettingsView {
             print(error)
             #endif
         }
+    }
+
+    private func deletePrivateKey() {
+        credentialsStore.setPrivateKey(nil)
+        privateKeyDeletionFailed = credentialsStore.privateKey != nil
+        guard !privateKeyDeletionFailed else {
+            return
+        }
+        settingsStore.gitHubPrivateKeyName = nil
+        privateKeyName = ""
     }
 
     private func persistRepositoryNameAndOwnerName() {

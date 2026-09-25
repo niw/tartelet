@@ -42,6 +42,8 @@
 "settings.github.repository_name.prompt" = "hello-world";
 "settings.github.app_id" = "App ID";
 "settings.github.private_key" = "Private Key (PEM)";
+"settings.github.private_key.delete" = "Delete";
+"settings.github.private_key.deletion_failed" = "The private key could not be deleted. Please try again.";
 "settings.github.private_key.select_file" = "Select File";
 "settings.github.private_key.placeholder" = "Select a private key (PEM)";
 "settings.github.private_key.scopes.organization" = "The private key must have these scopes set:\n✔ Organization: Self-hosted runners (Read and write)";

@@ -65,6 +65,10 @@ internal enum L10n {
         internal static let prompt = L10n.tr("Localizable", "settings.github.owner_name.prompt", fallback: "johnappleseed")
       }
       internal enum PrivateKey {
+        /// Delete
+        internal static let delete = L10n.tr("Localizable", "settings.github.private_key.delete", fallback: "Delete")
+        /// The private key could not be deleted. Please try again.
+        internal static let deletionFailed = L10n.tr("Localizable", "settings.github.private_key.deletion_failed", fallback: "The private key could not be deleted. Please try again.")
         /// Select a private key (PEM)
         internal static let placeholder = L10n.tr("Localizable", "settings.github.private_key.placeholder", fallback: "Select a private key (PEM)")
         /// Select File

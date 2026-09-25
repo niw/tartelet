@@ -5,7 +5,9 @@ struct GitHubPrivateKeyPicker: View {
     @Binding private var filename: String
     private let scope: GitHubRunnerScope
     private let isEnabled: Bool
+    private let hasPrivateKey: Bool
     private let onSelectFile: (URL) -> Void
+    private let onDelete: () -> Void
     private var scopesText: String {
         switch scope {
         case .organization:
@@ -19,12 +21,16 @@ struct GitHubPrivateKeyPicker: View {
         filename: Binding<String>,
         scope: GitHubRunnerScope,
         isEnabled: Bool,
-        onSelectFile: @escaping (URL) -> Void
+        hasPrivateKey: Bool,
+        onSelectFile: @escaping (URL) -> Void,
+        onDelete: @escaping () -> Void
     ) {
         self._filename = filename
         self.scope = scope
         self.isEnabled = isEnabled
+        self.hasPrivateKey = hasPrivateKey
         self.onSelectFile = onSelectFile
+        self.onDelete = onDelete
     }
 
     var body: some View {
@@ -39,13 +45,21 @@ struct GitHubPrivateKeyPicker: View {
                         )
                         .labelsHidden()
                         .disabled(true)
-                        Button {
-                            if let fileURL = presentOpenPanel() {
-                                onSelectFile(fileURL)
-                            }
-                        } label: {
-                            Text(L10n.Settings.Github.PrivateKey.selectFile)
-                        }.disabled(!isEnabled)
+                        if hasPrivateKey {
+                            Button(role: .destructive) {
+                                onDelete()
+                            } label: {
+                                Text(L10n.Settings.Github.PrivateKey.delete)
+                            }.disabled(!isEnabled)
+                        } else {
+                            Button {
+                                if let fileURL = presentOpenPanel() {
+                                    onSelectFile(fileURL)
+                                }
+                            } label: {
+                                Text(L10n.Settings.Github.PrivateKey.selectFile)
+                            }.disabled(!isEnabled)
+                        }
                     }
                 }
             } label: {
