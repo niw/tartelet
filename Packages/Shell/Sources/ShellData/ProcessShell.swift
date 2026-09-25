@@ -12,6 +12,7 @@ public struct ProcessShell: Shell {
         let process = Process()
         let sendableProcess = SendableProcess(process)
         return try await withTaskCancellationHandler {
+            try Task.checkCancellation()
             let pipe = Pipe()
             process.standardOutput = pipe
             process.arguments = arguments
@@ -19,11 +20,16 @@ public struct ProcessShell: Shell {
             process.standardInput = nil
             process.environment = ["PATH": "/usr/bin:/bin:/usr/sbin:/sbin"].merging(environment) { _, value in value }
             try process.run()
+            // Cancellation may arrive between the initial check and launching the process.
+            if Task.isCancelled, process.isRunning {
+                process.terminate()
+            }
             let data = pipe.fileHandleForReading.readDataToEndOfFile()
             // Explicitly close the pipe file handle to prevent running out of file descriptors.
             // See https://github.com/swiftlang/swift/issues/57827
             try pipe.fileHandleForReading.close()
             process.waitUntilExit()
+            try Task.checkCancellation()
             guard process.terminationStatus == 0 else {
                 throw ProcessShellError.unexpectedTerminationStatus(process.terminationStatus)
             }

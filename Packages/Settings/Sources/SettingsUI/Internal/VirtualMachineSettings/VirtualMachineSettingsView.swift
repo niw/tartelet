@@ -119,14 +119,22 @@ private extension VirtualMachineSettingsView {
             isRefreshingVirtualMachines = false
         }
         do {
+            try Task.checkCancellation()
             resolvedTartExecutablePath = nil
             resolvedTartExecutablePath = try tartExecutablePath()
-            virtualMachineNames = try await self.virtualMachinesSourceNameRepository.sourceNames()
+            let names = try await self.virtualMachinesSourceNameRepository.sourceNames()
+            try Task.checkCancellation()
+            virtualMachineNames = names
             virtualMachineListError = nil
             if case let .virtualMachine(name) = settingsStore.virtualMachine, !virtualMachineNames.contains(name) {
                 settingsStore.virtualMachine = .unknown
             }
+        } catch is CancellationError {
+            // Switching tabs cancels the view's task; keep the last successful list.
         } catch {
+            guard !Task.isCancelled else {
+                return
+            }
             virtualMachineNames = []
             virtualMachineListError = error.localizedDescription
             #if DEBUG
