@@ -1,21 +1,20 @@
 import Foundation
-import LocalAuthentication
 import LoggingDomain
+import Security
 
 public final class Keychain {
     private let logger: Logger
-    private let accessGroup: String?
+    private static let keyService = "dk.shape.Tartelet.privateKeys"
 
-    public init(logger: Logger, accessGroup: String? = nil) {
+    public init(logger: Logger) {
         self.logger = logger
-        self.accessGroup = accessGroup
     }
 }
 
 // MARK: - Passwords
 public extension Keychain {
     func setPassword(_ password: Data, forAccount account: String, belongingToService service: String) -> Bool {
-        let findQuery = FindPasswordQuery(accessGroup: accessGroup, service: service, account: account)
+        let findQuery = FindPasswordQuery(service: service, account: account)
         if SecItemCopyMatching(findQuery.rawQuery, nil) == errSecSuccess {
             let updateQuery = UpdatePasswordQuery(password: password)
             let updateStatus = SecItemUpdate(findQuery.rawQuery, updateQuery.rawQuery)
@@ -28,7 +27,6 @@ public extension Keychain {
             }
         } else {
             let addQuery = AddPasswordQuery(
-                accessGroup: accessGroup,
                 service: service,
                 account: account,
                 password: password
@@ -55,12 +53,12 @@ public extension Keychain {
     }
 
     func password(forAccount account: String, belongingToService service: String) -> Data? {
-        let query = ReadPasswordQuery(accessGroup: accessGroup, service: service, account: account)
+        let query = ReadPasswordQuery(service: service, account: account)
         return read(Data.self, usingQuery: query.rawQuery)
     }
 
     func password(forAccount account: String, belongingToService service: String) -> String? {
-        let query = ReadPasswordQuery(accessGroup: accessGroup, service: service, account: account)
+        let query = ReadPasswordQuery(service: service, account: account)
         guard let data = read(Data.self, usingQuery: query.rawQuery) else {
             return nil
         }
@@ -68,48 +66,32 @@ public extension Keychain {
     }
 
     func removePassword(forAccount account: String, belongingToService service: String) {
-        let query = FindPasswordQuery(accessGroup: accessGroup, service: service, account: account)
+        let query = FindPasswordQuery(service: service, account: account)
         SecItemDelete(query.rawQuery)
     }
 }
 
 // MARK: - Keys
 public extension Keychain {
+    // Store exported key data as a generic password in the file-based keychain.
+    // Saving a modern SecKey reference would instead select the data protection keychain.
     func setKey(_ key: RSAPrivateKey, withTag tag: String) -> Bool {
-        let findQuery = FindKeyQuery(accessGroup: accessGroup, tag: tag)
-        if SecItemCopyMatching(findQuery.rawQuery, nil) == errSecSuccess {
-            let removeStatus = SecItemDelete(findQuery.rawQuery)
-            guard removeStatus == errSecSuccess else {
-                logger.error(
-                    "Failed removing existing RSA private key with tag \(tag)."
-                    + " Received status code: \(removeStatus)"
-                )
-                return false
-            }
-        }
-        let addQuery = AddKeyQuery(accessGroup: accessGroup, tag: tag, key: key.rawValue)
-        let addStatus = SecItemAdd(addQuery.rawQuery, nil)
-        guard addStatus == errSecSuccess else {
-            logger.error(
-                "Failed storing RSA private key with tag \(tag)."
-                + " Received status code: \(addStatus)"
-            )
+        guard let data = key.data else {
+            logger.error("Failed exporting RSA private key with tag \(tag).")
             return false
         }
-        return true
+        return setPassword(data, forAccount: tag, belongingToService: Self.keyService)
     }
 
     func key(withTag tag: String) -> RSAPrivateKey? {
-        let query = ReadKeyQuery(accessGroup: accessGroup, tag: tag)
-        guard let key = read(SecKey.self, usingQuery: query.rawQuery) else {
+        guard let data: Data = password(forAccount: tag, belongingToService: Self.keyService) else {
             return nil
         }
-        return RSAPrivateKey(key)
+        return RSAPrivateKey(derRepresentation: data)
     }
 
     func removeKey(withTag tag: String) {
-        let query = FindKeyQuery(accessGroup: accessGroup, tag: tag)
-        SecItemDelete(query.rawQuery)
+        removePassword(forAccount: tag, belongingToService: Self.keyService)
     }
 }
 

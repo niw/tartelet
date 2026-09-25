@@ -1,7 +1,6 @@
 import Foundation
 
 struct AddPasswordQuery: KeychainQuery {
-    let accessGroup: String?
     let service: String
     let account: String
     let password: Data
@@ -9,13 +8,10 @@ struct AddPasswordQuery: KeychainQuery {
     var rawQuery: CFDictionary {
         var query: [String: Any] = [:]
         query[kSecClass as String] = kSecClassGenericPassword
+        query[kSecUseDataProtectionKeychain as String] = false
         query[kSecAttrService as String] = service
         query[kSecAttrAccount as String] = account
         query[kSecValueData as String] = password
-        if let accessGroup {
-            query[kSecAttrAccessGroup as String] = accessGroup
-        }
-        query[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
         return query as CFDictionary
     }
 }

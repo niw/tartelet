@@ -39,19 +39,19 @@ public final class RSAPrivateKey {
         guard let body = Data(base64Encoded: stringBody) else {
             return nil
         }
-        self.init(body: body)
+        self.init(derRepresentation: body)
     }
 
     public init(_ rawValue: SecKey) {
         self.rawValue = rawValue
     }
 
-    private init?(body: Data) {
+    public init?(derRepresentation: Data) {
         let attributes: [String: Any] = [
             kSecAttrKeyClass as String: kSecAttrKeyClassPrivate,
             kSecAttrKeyType as String: kSecAttrKeyTypeRSA
         ]
-        guard let secKey = SecKeyCreateWithData(body as CFData, attributes as CFDictionary, nil) else {
+        guard let secKey = SecKeyCreateWithData(derRepresentation as CFData, attributes as CFDictionary, nil) else {
             return nil
         }
         rawValue = secKey

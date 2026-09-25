@@ -89,9 +89,16 @@ The `swiftgen.yml` file at the root of the repository describes how constants ar
 
 ### Configuring the project to run on your machine
 
-To run the project locally, it is necessary to edit the `Tartelet.entitlements` file to specify a keychain access group that you control. Then you will need to edit the `Composers.swift` file to ensure the keychain is initialized with the keychain access group specified in the entitlements file. If you do not do this, the app will not be able to persist settings to the keychain.
+Keychain access does not require a Keychain access group.
 
-In other words, you will need to search for `$(AppIdentifierPrefix)dk.shape.Tartelet` and `566MC7D8D4.dk.shape.Tartelet` in the project and replace the occurrences with references to your keychain access group.
+Credentials are stored in the user's default file-based Keychain (normally the login Keychain).
+GitHub App private keys are stored as generic password items with service
+`dk.shape.Tartelet.privateKeys` and account `github.credentials.privateKey`, so they can be
+found and deleted using Keychain Access. macOS may ask for permission when a different build accesses existing items.
+
+Private keys saved by earlier versions in the Data Protection Keychain are not migrated or deleted.
+Select your original `.pem` file again after switching to this version. Deleting an old copy requires
+an app authorized for its original Keychain access group.
 
 ### Linting the Codebase with SwiftLint
 
