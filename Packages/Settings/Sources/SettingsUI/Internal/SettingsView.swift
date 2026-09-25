@@ -10,6 +10,7 @@ struct SettingsView<SettingsStoreType: SettingsStore & Observable>: View {
     let gitHubCredentialsStore: GitHubCredentialsStore
     let virtualMachineSSHCredentialsStore: VirtualMachineSSHCredentialsStore
     let virtualMachinesSourceNameRepository: VirtualMachineSourceNameRepository
+    let tartExecutablePath: () throws -> String
     let logExporter: LogExporter
     let isSettingsEnabled: Bool
 
@@ -26,6 +27,7 @@ struct SettingsView<SettingsStoreType: SettingsStore & Observable>: View {
                 settingsStore: settingsStore,
                 credentialsStore: virtualMachineSSHCredentialsStore,
                 virtualMachinesSourceNameRepository: virtualMachinesSourceNameRepository,
+                tartExecutablePath: tartExecutablePath,
                 isSettingsEnabled: isSettingsEnabled
             )
             .tabItem {

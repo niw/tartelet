@@ -130,6 +130,8 @@ internal enum L10n {
       internal static let ssh = L10n.tr("Localizable", "settings.virtual_machine.ssh", fallback: "SSH")
       /// Start Virtual Machines on App Launch
       internal static let startVirtualMachinesOnAppLaunch = L10n.tr("Localizable", "settings.virtual_machine.start_virtual_machines_on_app_launch", fallback: "Start Virtual Machines on App Launch")
+      /// Tart Executable
+      internal static let tartExecutable = L10n.tr("Localizable", "settings.virtual_machine.tart_executable", fallback: "Tart Executable")
       /// Tart Home
       internal static let tartHome = L10n.tr("Localizable", "settings.virtual_machine.tart_home", fallback: "Tart Home")
       /// Unknown
@@ -151,6 +153,20 @@ internal enum L10n {
           /// runner
           internal static let placeholder = L10n.tr("Localizable", "settings.virtual_machine.ssh.username.placeholder", fallback: "runner")
         }
+      }
+      internal enum TartExecutable {
+        /// File
+        internal static let file = L10n.tr("Localizable", "settings.virtual_machine.tart_executable.file", fallback: "File")
+        /// Select the Tart command-line executable. By default, Tartelet looks in Homebrew and then /Applications/tart.app.
+        internal static let footer = L10n.tr("Localizable", "settings.virtual_machine.tart_executable.footer", fallback: "Select the Tart command-line executable. By default, Tartelet looks in Homebrew and then /Applications/tart.app.")
+        /// Select a file with permission to execute.
+        internal static let invalidFile = L10n.tr("Localizable", "settings.virtual_machine.tart_executable.invalid_file", fallback: "Select a file with permission to execute.")
+        /// Tart not found
+        internal static let notFound = L10n.tr("Localizable", "settings.virtual_machine.tart_executable.not_found", fallback: "Tart not found")
+        /// Reset to Default
+        internal static let resetToDefault = L10n.tr("Localizable", "settings.virtual_machine.tart_executable.reset_to_default", fallback: "Reset to Default")
+        /// Select File
+        internal static let selectFile = L10n.tr("Localizable", "settings.virtual_machine.tart_executable.select_file", fallback: "Select File")
       }
       internal enum TartHome {
         /// Folder

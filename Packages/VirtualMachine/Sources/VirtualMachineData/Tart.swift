@@ -3,6 +3,7 @@ import ShellDomain
 
 public struct Tart {
     private let homeProvider: TartHomeProvider
+    private let executableProvider: TartExecutableProvider?
     private let shell: Shell
     private var environment: [String: String]? {
         guard let homeFolderURL = homeProvider.homeFolderURL else {
@@ -11,9 +12,18 @@ public struct Tart {
         return ["TART_HOME": homeFolderURL.path(percentEncoded: false)]
     }
 
-    public init(homeProvider: TartHomeProvider, shell: Shell) {
+    public init(
+        homeProvider: TartHomeProvider,
+        shell: Shell,
+        executableProvider: TartExecutableProvider? = nil
+    ) {
         self.homeProvider = homeProvider
         self.shell = shell
+        self.executableProvider = executableProvider
+    }
+
+    public func executablePath() throws -> String {
+        try TartLocator().locate(executableURL: executableProvider?.executableURL)
     }
 
     public func clone(sourceName: String, newName: String) async throws {
@@ -53,8 +63,7 @@ public struct Tart {
 private extension Tart {
     @discardableResult
     private func executeCommand(withArguments arguments: [String]) async throws -> String {
-        let locator = TartLocator(shell: shell)
-        let filePath = try locator.locate()
+        let filePath = try executablePath()
         if let environment {
             return try await shell.runExecutable(
                 atPath: filePath,

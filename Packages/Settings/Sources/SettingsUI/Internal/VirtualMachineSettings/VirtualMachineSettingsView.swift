@@ -7,10 +7,13 @@ struct VirtualMachineSettingsView<SettingsStoreType: SettingsStore & Observable>
     @Bindable var settingsStore: SettingsStoreType
     let credentialsStore: VirtualMachineSSHCredentialsStore
     let virtualMachinesSourceNameRepository: VirtualMachineSourceNameRepository
+    let tartExecutablePath: () throws -> String
     let isSettingsEnabled: Bool
 
     @State private var virtualMachineNames: [String] = []
     @State private var isRefreshingVirtualMachines = false
+    @State private var virtualMachineListError: String?
+    @State private var resolvedTartExecutablePath: String?
     @State private var sshUsername = ""
     @State private var sshPassword = ""
 
@@ -26,6 +29,10 @@ struct VirtualMachineSettingsView<SettingsStoreType: SettingsStore & Observable>
                     Task {
                         await refreshVirtualMachines()
                     }
+                }
+                if let virtualMachineListError {
+                    Text(virtualMachineListError)
+                        .foregroundStyle(.red)
                 }
                 VirtualMachineCountPicker(selection: $settingsStore.numberOfVirtualMachines)
                     .disabled(!isSettingsEnabled)
@@ -48,6 +55,17 @@ struct VirtualMachineSettingsView<SettingsStoreType: SettingsStore & Observable>
                 Text(L10n.Settings.VirtualMachine.Ssh.footer)
             }
             Section {
+                TartExecutablePicker(
+                    executableURL: $settingsStore.tartExecutableURL,
+                    resolvedExecutablePath: resolvedTartExecutablePath,
+                    isEnabled: isSettingsEnabled
+                )
+            } header: {
+                Text(L10n.Settings.VirtualMachine.tartExecutable)
+            } footer: {
+                Text(L10n.Settings.VirtualMachine.TartExecutable.footer)
+            }
+            Section {
                 TartHomeFolderPicker(
                     folderURL: $settingsStore.tartHomeFolderURL,
                     isEnabled: isSettingsEnabled
@@ -67,6 +85,11 @@ struct VirtualMachineSettingsView<SettingsStoreType: SettingsStore & Observable>
             sshPassword = credentialsStore.password ?? ""
         }
         .onChange(of: settingsStore.tartHomeFolderURL) { _, _ in
+            Task {
+                await refreshVirtualMachines()
+            }
+        }
+        .onChange(of: settingsStore.tartExecutableURL) { _, _ in
             Task {
                 await refreshVirtualMachines()
             }
@@ -96,11 +119,16 @@ private extension VirtualMachineSettingsView {
             isRefreshingVirtualMachines = false
         }
         do {
+            resolvedTartExecutablePath = nil
+            resolvedTartExecutablePath = try tartExecutablePath()
             virtualMachineNames = try await self.virtualMachinesSourceNameRepository.sourceNames()
+            virtualMachineListError = nil
             if case let .virtualMachine(name) = settingsStore.virtualMachine, !virtualMachineNames.contains(name) {
                 settingsStore.virtualMachine = .unknown
             }
         } catch {
+            virtualMachineNames = []
+            virtualMachineListError = error.localizedDescription
             #if DEBUG
             print(error)
             #endif

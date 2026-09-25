@@ -5,6 +5,14 @@
 "settings.general.application_ui_mode.dock_and_menu_bar" = "Dock and Menu Bar";
 "settings.general.export_logs" = "Export Logs...";
 
+"settings.virtual_machine.tart_executable" = "Tart Executable";
+"settings.virtual_machine.tart_executable.not_found" = "Tart not found";
+"settings.virtual_machine.tart_executable.file" = "File";
+"settings.virtual_machine.tart_executable.footer" = "Select the Tart command-line executable. By default, Tartelet looks in Homebrew and then /Applications/tart.app.";
+"settings.virtual_machine.tart_executable.invalid_file" = "Select a file with permission to execute.";
+"settings.virtual_machine.tart_executable.reset_to_default" = "Reset to Default";
+"settings.virtual_machine.tart_executable.select_file" = "Select File";
+
 "settings.virtual_machine.tart_home" = "Tart Home";
 "settings.virtual_machine.tart_home.folder" = "Folder";
 "settings.virtual_machine.tart_home.select_folder" = "Select Folder";
@@ -41,7 +49,7 @@
 "settings.github.create_app" = "Create GitHub App";
 
 "settings.github_runner" = "Runner";
-"settings.github_runner.disableDefaultLabels" = "Disable default labels"
+"settings.github_runner.disableDefaultLabels" = "Disable default labels";
 "settings.github_runner.disableUpdates" = "Disable runner auto-update";
 "settings.github_runner.disableUpdates.subtitle" = "This is meant to be used when a fixed version is pre-installed, otherwise Tartelet will install the latest version when the VM starts.";
 "settings.github_runner.labels" = "Labels";

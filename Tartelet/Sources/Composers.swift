@@ -14,18 +14,18 @@ import VirtualMachineDomain
 
 enum Composers {
     static let settingsStore = AppStorageSettingsStore()
+    static let tart = Tart(
+        homeProvider: SettingsTartHomeProvider(settingsStore: settingsStore),
+        shell: ProcessShell(),
+        executableProvider: SettingsTartExecutableProvider(settingsStore: settingsStore)
+    )
 
     static let fleet = VirtualMachineFleet(
         logger: logger(subsystem: "VirtualMachineFleet"),
         baseVirtualMachine: SSHConnectingVirtualMachine(
             logger: logger(subsystem: "SSHConnectingVirtualMachine"),
             virtualMachine: SettingsVirtualMachine(
-                tart: Tart(
-                    homeProvider: SettingsTartHomeProvider(
-                        settingsStore: settingsStore
-                    ),
-                    shell: ProcessShell()
-                ),
+                tart: tart,
                 settingsStore: settingsStore
             ),
             sshClient: VirtualMachineSSHClient(
@@ -58,12 +58,7 @@ enum Composers {
     static let editor = VirtualMachineEditor(
         logger: logger(subsystem: "VirtualMachineEditor"),
         virtualMachine: SettingsVirtualMachine(
-            tart: Tart(
-                homeProvider: SettingsTartHomeProvider(
-                    settingsStore: settingsStore
-                ),
-                shell: ProcessShell()
-            ),
+            tart: tart,
             settingsStore: settingsStore
         )
     )

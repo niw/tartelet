@@ -29,13 +29,9 @@ struct TarteletApp: App {
             gitHubCredentialsStore: Composers.gitHubCredentialsStore,
             virtualMachineSSHCredentialsStore: Composers.virtualMachineSSHCredentialsStore,
             virtualMachinesSourceNameRepository: TartVirtualMachineSourceNameRepository(
-                tart: Tart(
-                    homeProvider: SettingsTartHomeProvider(
-                        settingsStore: Composers.settingsStore
-                    ),
-                    shell: ProcessShell()
-                )
+                tart: Composers.tart
             ),
+            tartExecutablePath: Composers.tart.executablePath,
             logExporter: FileLogExporter(
                 logger: Composers.logger(subsystem: "FileLogExporter"),
                 fileSystem: DiskFileSystem()

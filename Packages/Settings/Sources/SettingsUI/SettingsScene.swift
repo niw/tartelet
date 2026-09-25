@@ -10,6 +10,7 @@ public struct SettingsScene<SettingsStoreType: SettingsStore & Observable>: Scen
     private let gitHubCredentialsStore: GitHubCredentialsStore
     private let virtualMachineSSHCredentialsStore: VirtualMachineSSHCredentialsStore
     private let virtualMachinesSourceNameRepository: VirtualMachineSourceNameRepository
+    private let tartExecutablePath: () throws -> String
     private let logExporter: LogExporter
     private let fleet: VirtualMachineFleet
     private let editor: VirtualMachineEditor
@@ -22,6 +23,7 @@ public struct SettingsScene<SettingsStoreType: SettingsStore & Observable>: Scen
         gitHubCredentialsStore: GitHubCredentialsStore,
         virtualMachineSSHCredentialsStore: VirtualMachineSSHCredentialsStore,
         virtualMachinesSourceNameRepository: VirtualMachineSourceNameRepository,
+        tartExecutablePath: @escaping () throws -> String,
         logExporter: LogExporter,
         fleet: VirtualMachineFleet,
         editor: VirtualMachineEditor
@@ -30,6 +32,7 @@ public struct SettingsScene<SettingsStoreType: SettingsStore & Observable>: Scen
         self.gitHubCredentialsStore = gitHubCredentialsStore
         self.virtualMachineSSHCredentialsStore = virtualMachineSSHCredentialsStore
         self.virtualMachinesSourceNameRepository = virtualMachinesSourceNameRepository
+        self.tartExecutablePath = tartExecutablePath
         self.logExporter = logExporter
         self.fleet = fleet
         self.editor = editor
@@ -42,6 +45,7 @@ public struct SettingsScene<SettingsStoreType: SettingsStore & Observable>: Scen
                 gitHubCredentialsStore: gitHubCredentialsStore,
                 virtualMachineSSHCredentialsStore: virtualMachineSSHCredentialsStore,
                 virtualMachinesSourceNameRepository: virtualMachinesSourceNameRepository,
+                tartExecutablePath: tartExecutablePath,
                 logExporter: logExporter,
                 isSettingsEnabled: isSettingsEnabled
             )
