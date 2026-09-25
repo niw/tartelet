@@ -17,7 +17,7 @@ public struct ProcessShell: Shell {
             process.arguments = arguments
             process.launchPath = executablePath
             process.standardInput = nil
-            process.environment = environment
+            process.environment = ["PATH": "/usr/bin:/bin:/usr/sbin:/sbin"].merging(environment) { _, value in value }
             try process.run()
             let data = pipe.fileHandleForReading.readDataToEndOfFile()
             // Explicitly close the pipe file handle to prevent running out of file descriptors.
