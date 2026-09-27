@@ -8,6 +8,7 @@ public final class AppStorageSettingsStore: SettingsStore {
         static let applicationUIMode = "applicationUIMode"
         static let tartHomeFolderURL = "tartHomeFolderURL"
         static let tartExecutableURL = "tartExecutableURL"
+        static let tartRunOptions = "tartRunOptions"
         static let virtualMachine = "virtualMachine"
         static let numberOfVirtualMachines = "numberOfVirtualMachines"
         static let startVirtualMachinesOnLaunch = "startVirtualMachinesOnLaunch"
@@ -53,6 +54,17 @@ public final class AppStorageSettingsStore: SettingsStore {
         set {
             withMutation(keyPath: \.tartExecutableURL) {
                 userDefaults.set(newValue, forKey: AppStorageKey.tartExecutableURL)
+            }
+        }
+    }
+    public var tartRunOptions: String {
+        get {
+            access(keyPath: \.tartRunOptions)
+            return userDefaults.string(forKey: AppStorageKey.tartRunOptions) ?? ""
+        }
+        set {
+            withMutation(keyPath: \.tartRunOptions) {
+                userDefaults.setValue(newValue, forKey: AppStorageKey.tartRunOptions)
             }
         }
     }

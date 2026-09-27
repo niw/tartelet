@@ -17,7 +17,8 @@ enum Composers {
     static let tart = Tart(
         homeProvider: SettingsTartHomeProvider(settingsStore: settingsStore),
         shell: ProcessShell(),
-        executableProvider: SettingsTartExecutableProvider(settingsStore: settingsStore)
+        executableProvider: SettingsTartExecutableProvider(settingsStore: settingsStore),
+        runOptionsProvider: SettingsTartRunOptionsProvider(settingsStore: settingsStore)
     )
 
     static let fleet = VirtualMachineFleet(

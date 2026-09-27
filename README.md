@@ -112,6 +112,12 @@ Reset to Default restores automatic lookup in `/opt/homebrew/bin/tart`, followed
 even when no custom file is selected. Changing the executable refreshes the VM list
 and applies to subsequent Tart commands. Stop running VMs before changing this setting.
 
+### Passing options to `tart run`
+
+In Settings > Virtual Machine > Tart Run Options, enter additional options separated by spaces,
+for example `--no-graphics`. Tartelet passes them to `tart run` when it starts
+a virtual machine, so the change applies to virtual machines started afterwards.
+
 ### Linting the Codebase with SwiftLint
 
 We use [SwiftLint](https://github.com/realm/SwiftLint) to ensure uniformity in the code. Install SwiftLint using [Homebrew](https://brew.sh) by running the following command in your terminal.

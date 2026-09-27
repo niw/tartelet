@@ -13,6 +13,11 @@
 "settings.virtual_machine.tart_executable.reset_to_default" = "Reset to Default";
 "settings.virtual_machine.tart_executable.select_file" = "Select File";
 
+"settings.virtual_machine.tart_run_options" = "Tart Run Options";
+"settings.virtual_machine.tart_run_options.options" = "Options";
+"settings.virtual_machine.tart_run_options.placeholder" = "--no-graphics";
+"settings.virtual_machine.tart_run_options.footer" = "Additional options passed to \"tart run\" when Tartelet starts a virtual machine, separated by spaces.";
+
 "settings.virtual_machine.tart_home" = "Tart Home";
 "settings.virtual_machine.tart_home.folder" = "Folder";
 "settings.virtual_machine.tart_home.select_folder" = "Select Folder";

@@ -138,6 +138,8 @@ internal enum L10n {
       internal static let tartExecutable = L10n.tr("Localizable", "settings.virtual_machine.tart_executable", fallback: "Tart Executable")
       /// Tart Home
       internal static let tartHome = L10n.tr("Localizable", "settings.virtual_machine.tart_home", fallback: "Tart Home")
+      /// Tart Run Options
+      internal static let tartRunOptions = L10n.tr("Localizable", "settings.virtual_machine.tart_run_options", fallback: "Tart Run Options")
       /// Unknown
       internal static let unknown = L10n.tr("Localizable", "settings.virtual_machine.unknown", fallback: "Unknown")
       internal enum Count {
@@ -183,6 +185,14 @@ internal enum L10n {
         internal static let resetToDefault = L10n.tr("Localizable", "settings.virtual_machine.tart_home.reset_to_default", fallback: "Reset to Default")
         /// Select Folder
         internal static let selectFolder = L10n.tr("Localizable", "settings.virtual_machine.tart_home.select_folder", fallback: "Select Folder")
+      }
+      internal enum TartRunOptions {
+        /// Additional options passed to "tart run" when Tartelet starts a virtual machine, separated by spaces.
+        internal static let footer = L10n.tr("Localizable", "settings.virtual_machine.tart_run_options.footer", fallback: "Additional options passed to \"tart run\" when Tartelet starts a virtual machine, separated by spaces.")
+        /// Options
+        internal static let options = L10n.tr("Localizable", "settings.virtual_machine.tart_run_options.options", fallback: "Options")
+        /// --no-graphics
+        internal static let placeholder = L10n.tr("Localizable", "settings.virtual_machine.tart_run_options.placeholder", fallback: "--no-graphics")
       }
     }
   }

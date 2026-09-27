@@ -75,6 +75,18 @@ struct VirtualMachineSettingsView<SettingsStoreType: SettingsStore & Observable>
             } footer: {
                 Text(L10n.Settings.VirtualMachine.TartHome.footer)
             }
+            Section {
+                TextField(
+                    L10n.Settings.VirtualMachine.TartRunOptions.options,
+                    text: $settingsStore.tartRunOptions,
+                    prompt: Text(L10n.Settings.VirtualMachine.TartRunOptions.placeholder)
+                )
+                .disabled(!isSettingsEnabled)
+            } header: {
+                Text(L10n.Settings.VirtualMachine.tartRunOptions)
+            } footer: {
+                Text(L10n.Settings.VirtualMachine.TartRunOptions.footer)
+            }
         }
         .formStyle(.grouped)
         .task {

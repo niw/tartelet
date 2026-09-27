@@ -4,6 +4,7 @@ import ShellDomain
 public struct Tart {
     private let homeProvider: TartHomeProvider
     private let executableProvider: TartExecutableProvider?
+    private let runOptionsProvider: TartRunOptionsProvider?
     private let shell: Shell
     private var environment: [String: String]? {
         guard let homeFolderURL = homeProvider.homeFolderURL else {
@@ -15,11 +16,13 @@ public struct Tart {
     public init(
         homeProvider: TartHomeProvider,
         shell: Shell,
-        executableProvider: TartExecutableProvider? = nil
+        executableProvider: TartExecutableProvider? = nil,
+        runOptionsProvider: TartRunOptionsProvider? = nil
     ) {
         self.homeProvider = homeProvider
         self.shell = shell
         self.executableProvider = executableProvider
+        self.runOptionsProvider = runOptionsProvider
     }
 
     public func executablePath() throws -> String {
@@ -38,6 +41,7 @@ public struct Tart {
             try FileManager.default.createDirectory(atPath: cacheFolder.path, withIntermediateDirectories: true)
         }
         var runArgs =  ["run", "--dir=cache:\(cacheFolder.path())"]
+        runArgs.append(contentsOf: runOptionsProvider?.runOptions ?? [])
         if let tartRunOptions = ProcessInfo.processInfo.environment["TARTELET_RUN_OPTIONS"] {
             runArgs.append(tartRunOptions)
         }
